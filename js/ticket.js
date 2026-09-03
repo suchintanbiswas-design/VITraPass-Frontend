@@ -39,7 +39,16 @@
     }
 
     try {
-      const response = await fetch(`${CONFIG.API_BASE_URL}/ticket/${ticketId}`);
+      const token = Auth.getIdToken();
+      const fetchOptions = {
+        method: 'GET',
+        headers: {}
+      };
+      if (token) {
+        fetchOptions.headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${CONFIG.API_BASE_URL}/ticket/${ticketId}`, fetchOptions);
       const data = await response.json();
 
       if (response.ok) {

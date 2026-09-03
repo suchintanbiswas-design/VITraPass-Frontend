@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VITraPass - Create Account</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">VITra<span class="accent">Pass</span></h1>
+            <p class="tagline">VIT Smart Event Ticketing System</p>
+            <nav class="nav">
+                <a href="login.html" class="nav-link">Login</a>
+                <a href="signup.html" class="nav-link active">Create Account</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h2>Create Student Account</h2>
+            <p class="subtitle">Join VITraPass to register for events</p>
+
+            <form id="signup-form" novalidate>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" required maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Loading..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    <small style="color: #666; font-size: 0.8rem;">Minimum 8 characters, with letters and numbers.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="signup-btn">
+                    Sign Up
+                </button>
+            </form>
+
+            <div style="margin-top: 15px; text-align: center;">
+                Already have an account? <a href="login.html" style="color: var(--primary-color);">Login here</a>
+            </div>
+
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Creating account...</p>
+            </div>
+
+            <div id="success-message" class="success-box hidden">
+                <h3>✓ Verification Email Sent</h3>
+                <p>Please check your email for the verification code.</p>
+                
+                <form id="verify-form" style="margin-top: 15px;">
+                    <div class="form-group">
+                        <label for="code">Verification Code</label>
+                        <input type="text" id="code" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Verify Email</button>
+                </form>
+            </div>
+
+            <div id="error-message" class="error-box hidden">
+                <h3>✕ Sign Up Failed</h3>
+                <p id="error-detail"></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2027 VITraPass — VIT Smart Event Ticketing System</p>
+            <p class="footer-note">Cloud Architecture Design Project</p>
+        </div>
+    </footer>
+
+    <!-- Amazon Cognito SDK -->
+    <script src="https://unpkg.com/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (Auth.isAuthenticated()) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            document.getElementById('email').placeholder = `your.email@${CONFIG.ALLOWED_EMAIL_DOMAIN}`;
+
+            const signupForm = document.getElementById('signup-form');
+            const verifyForm = document.getElementById('verify-form');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm_password');
+            const codeInput = document.getElementById('code');
+            
+            const loading = document.getElementById('loading');
+            const errorBox = document.getElementById('error-message');
+            const errorDetail = document.getElementById('error-detail');
+            const successBox = document.getElementById('success-message');
+
+            let registeredEmail = '';
+
+            signupForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                errorBox.classList.add('hidden');
+                
+                const name = nameInput.value.trim();
+                const email = emailInput.value.trim().toLowerCase();
+                const password = passwordInput.value;
+                const confirm = confirmPasswordInput.value;
+
+                if (password !== confirm) {
+                    errorDetail.textContent = "Passwords do not match.";
+                    errorBox.classList.remove('hidden');
+                    return;
+                }
+
+                loading.classList.remove('hidden');
+
+                Auth.signUp(name, email, password, (err, result) => {
+                    loading.classList.add('hidden');
+                    if (err) {
+                        errorDetail.textContent = err.message || JSON.stringify(err);
+                        errorBox.classList.remove('hidden');
+                        return;
+                    }
+                    registeredEmail = email;
+                    signupForm.classList.add('hidden');
+                    successBox.classList.remove('hidden');
+                });
+            });
+
+            verifyForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                errorBox.classList.add('hidden');
+                
+                const code = codeInput.value.trim();
+                loading.classList.remove('hidden');
+
+                Auth.confirmSignUp(registeredEmail, code, (err, result) => {
+                    loading.classList.add('hidden');
+                    if (err) {
+                        errorDetail.textContent = err.message || JSON.stringify(err);
+                        errorBox.classList.remove('hidden');
+                        return;
+                    }
+                    alert("Email verified successfully! You can now log in.");
+                    window.location.href = 'login.html';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

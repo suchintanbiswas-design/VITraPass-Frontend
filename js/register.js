@@ -18,6 +18,14 @@
   const emailError = document.getElementById('email-error');
   const eventError = document.getElementById('event-error');
 
+  document.addEventListener('DOMContentLoaded', () => {
+    // Set dynamic placeholder
+    const emailInput = document.getElementById('email');
+    if (emailInput && CONFIG.ALLOWED_EMAIL_DOMAIN) {
+      emailInput.placeholder = `your.email@${CONFIG.ALLOWED_EMAIL_DOMAIN}`;
+    }
+  });
+
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     clearErrors();

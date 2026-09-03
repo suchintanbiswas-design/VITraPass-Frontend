@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VITraPass - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .event-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .event-details h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.2rem;
+        }
+        .event-details p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .user-info {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">VITra<span class="accent">Pass</span></h1>
+            <p class="tagline">VIT Smart Event Ticketing System</p>
+            <nav class="nav">
+                <a href="dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="#" id="logout-link" class="nav-link">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h2>Student Dashboard</h2>
+            
+            <div class="user-info">
+                <p>Welcome, <strong id="student-name">...</strong></p>
+                <p>Email: <span id="student-email">...</span></p>
+            </div>
+
+            <h3>Available VIT Events</h3>
+            <div id="events-list">
+                <!-- Hardcoded list as per existing event configuration -->
+                <div class="event-card">
+                    <div class="event-details">
+                        <h3>VIT Riviera 2027</h3>
+                        <p>ID: VIT-RIVIERA-2027</p>
+                    </div>
+                    <button class="btn btn-primary register-btn" data-event="VIT-RIVIERA-2027">Register</button>
+                </div>
+                <div class="event-card">
+                    <div class="event-details">
+                        <h3>VIT GraVITas 2027</h3>
+                        <p>ID: VIT-GRAVITAS-2027</p>
+                    </div>
+                    <button class="btn btn-primary register-btn" data-event="VIT-GRAVITAS-2027">Register</button>
+                </div>
+                <div class="event-card">
+                    <div class="event-details">
+                        <h3>VIT Hackathon 2027</h3>
+                        <p>ID: VIT-HACKATHON-2027</p>
+                    </div>
+                    <button class="btn btn-primary register-btn" data-event="VIT-HACKATHON-2027">Register</button>
+                </div>
+                <div class="event-card">
+                    <div class="event-details">
+                        <h3>AI/ML Workshop 2027</h3>
+                        <p>ID: VIT-WORKSHOP-AI-2027</p>
+                    </div>
+                    <button class="btn btn-primary register-btn" data-event="VIT-WORKSHOP-AI-2027">Register</button>
+                </div>
+                <div class="event-card">
+                    <div class="event-details">
+                        <h3>VIT TechFest 2027</h3>
+                        <p>ID: VIT-TECHFEST-2027</p>
+                    </div>
+                    <button class="btn btn-primary register-btn" data-event="VIT-TECHFEST-2027">Register</button>
+                </div>
+            </div>
+
+            <div id="loading" class="loading hidden" style="margin-top:20px;">
+                <div class="spinner"></div>
+                <p>Registering and generating your ticket...</p>
+            </div>
+
+            <div id="success-message" class="success-box hidden">
+                <h3>✓ Registration Successful!</h3>
+                <p>Your ticket has been generated. Check your email for the QR-coded ticket.</p>
+                <a id="view-ticket-link" href="#" class="btn btn-secondary">View Your Ticket</a>
+            </div>
+
+            <div id="error-message" class="error-box hidden">
+                <h3>✕ Registration Failed</h3>
+                <p id="error-detail"></p>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2027 VITraPass — VIT Smart Event Ticketing System</p>
+            <p class="footer-note">Cloud Architecture Design Project</p>
+        </div>
+    </footer>
+
+    <!-- Amazon Cognito SDK -->
+    <script src="https://unpkg.com/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            Auth.requireAuth();
+
+            document.getElementById('logout-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                Auth.signOut();
+                window.location.href = 'login.html';
+            });
+
+            // Populate user details.
+            const user = Auth.getCurrentUser();
+            if (user) {
+                user.getSession((err, session) => {
+                    if (err) {
+                        Auth.signOut();
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    user.getUserAttributes((err, attributes) => {
+                        if (err) return;
+                        let name = '';
+                        let email = '';
+                        attributes.forEach(attr => {
+                            if (attr.getName() === 'name') name = attr.getValue();
+                            if (attr.getName() === 'email') email = attr.getValue();
+                        });
+                        document.getElementById('student-name').textContent = name;
+                        document.getElementById('student-email').textContent = email;
+                    });
+                });
+            }
+
+            // Register logic
+            const registerBtns = document.querySelectorAll('.register-btn');
+            const loading = document.getElementById('loading');
+            const successBox = document.getElementById('success-message');
+            const errorBox = document.getElementById('error-message');
+            const errorDetail = document.getElementById('error-detail');
+            const viewTicketLink = document.getElementById('view-ticket-link');
+
+            registerBtns.forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const eventId = e.target.getAttribute('data-event');
+                    if (!eventId) return;
+
+                    successBox.classList.add('hidden');
+                    errorBox.classList.add('hidden');
+                    loading.classList.remove('hidden');
+
+                    try {
+                        const token = Auth.getIdToken();
+                        if (!token) throw new Error("No authentication token found. Please log in again.");
+
+                        const response = await fetch(`${CONFIG.API_BASE_URL}/register`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ event_id: eventId })
+                        });
+
+                        const data = await response.json();
+                        loading.classList.add('hidden');
+
+                        if (response.ok) {
+                            successBox.classList.remove('hidden');
+                            viewTicketLink.href = `ticket.html?id=${data.ticket.ticket_id}`;
+                        } else {
+                            throw new Error(data.error || 'Registration failed');
+                        }
+                    } catch (err) {
+                        loading.classList.add('hidden');
+                        errorDetail.textContent = err.message;
+                        errorBox.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
