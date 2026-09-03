@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VITraPass - Event Registration</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">VITra<span class="accent">Pass</span></h1>
+            <p class="tagline">VIT Smart Event Ticketing System</p>
+            <nav class="nav">
+                <a href="index.html" class="nav-link active">Register</a>
+                <a href="scanner.html" class="nav-link">Scanner</a>
+                <a href="admin.html" class="nav-link">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h2>Event Registration</h2>
+            <p class="subtitle">Register for a VIT campus event and receive your QR-coded ticket.</p>
+
+            <form id="registration-form" novalidate>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" required maxlength="100">
+                    <span class="error-msg" id="name-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="your.email@vitstudent.ac.in" required>
+                    <span class="error-msg" id="email-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="event_id">Event</label>
+                    <select id="event_id" name="event_id" required>
+                        <option value="">-- Select an Event --</option>
+                        <option value="VIT-RIVIERA-2027">VIT Riviera 2027</option>
+                        <option value="VIT-GRAVITAS-2027">VIT GraVITas 2027</option>
+                        <option value="VIT-HACKATHON-2027">VIT Hackathon 2027</option>
+                        <option value="VIT-WORKSHOP-AI-2027">AI/ML Workshop 2027</option>
+                        <option value="VIT-TECHFEST-2027">VIT TechFest 2027</option>
+                    </select>
+                    <span class="error-msg" id="event-error"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submit-btn">
+                    Register & Get Ticket
+                </button>
+            </form>
+
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Generating your ticket...</p>
+            </div>
+
+            <div id="success-message" class="success-box hidden">
+                <h3>✓ Registration Successful!</h3>
+                <p>Your ticket has been generated. Check your email for the QR-coded ticket.</p>
+                <a id="view-ticket-link" href="#" class="btn btn-secondary">View Your Ticket</a>
+            </div>
+
+            <div id="error-message" class="error-box hidden">
+                <h3>✕ Registration Failed</h3>
+                <p id="error-detail"></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2027 VITraPass — VIT Smart Event Ticketing System</p>
+            <p class="footer-note">Cloud Architecture Design Project</p>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/register.js"></script>
+</body>
+</html>

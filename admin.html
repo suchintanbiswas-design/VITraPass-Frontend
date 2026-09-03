@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VITraPass - Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">VITra<span class="accent">Pass</span></h1>
+            <p class="tagline">Event Administration Dashboard</p>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Register</a>
+                <a href="scanner.html" class="nav-link">Scanner</a>
+                <a href="admin.html" class="nav-link active">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h2>📊 Event Dashboard</h2>
+            <div style="background-color: #fff3e0; border-left: 4px solid #ff9800; padding: 12px; margin-bottom: 20px; font-size: 14px; border-radius: 4px;">
+                <strong>Notice:</strong> This dashboard is currently publicly accessible and displays aggregate event statistics only. Authentication will be added in a future phase.
+            </div>
+
+            <div class="form-group">
+                <label for="dashboard-event">Select Event</label>
+                <select id="dashboard-event">
+                    <option value="">-- Select an Event --</option>
+                    <option value="VIT-RIVIERA-2027">VIT Riviera 2027</option>
+                    <option value="VIT-GRAVITAS-2027">VIT GraVITas 2027</option>
+                    <option value="VIT-HACKATHON-2027">VIT Hackathon 2027</option>
+                    <option value="VIT-WORKSHOP-AI-2027">AI/ML Workshop 2027</option>
+                    <option value="VIT-TECHFEST-2027">VIT TechFest 2027</option>
+                </select>
+            </div>
+
+            <button id="refresh-stats" class="btn btn-primary">Load Statistics</button>
+        </section>
+
+        <section id="stats-section" class="card hidden">
+            <h2 id="stats-event-name" class="stats-title"></h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-registered">—</span>
+                    <span class="stat-label">Registered</span>
+                </div>
+                <div class="stat-card stat-success">
+                    <span class="stat-value" id="stat-checkedin">—</span>
+                    <span class="stat-label">Checked In</span>
+                </div>
+                <div class="stat-card stat-warning">
+                    <span class="stat-value" id="stat-remaining">—</span>
+                    <span class="stat-label">Remaining</span>
+                </div>
+                <div class="stat-card stat-info">
+                    <span class="stat-value" id="stat-rate">—</span>
+                    <span class="stat-label">Check-in Rate</span>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <p class="progress-label" id="progress-label">0% checked in</p>
+            </div>
+        </section>
+
+        <section id="stats-error" class="card hidden">
+            <div class="error-box">
+                <h3>✕ Unable to Load Statistics</h3>
+                <p id="stats-error-detail"></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2027 VITraPass — VIT Smart Event Ticketing System</p>
+            <p class="footer-note">Cloud Architecture Design Project</p>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
