@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VITraPass - Login</title>
+    <title>VITraPass - Volunteer Login</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,22 +12,21 @@
             <h1 class="logo">VITra<span class="accent">Pass</span></h1>
             <p class="tagline">VIT Smart Event Ticketing System</p>
             <nav class="nav">
-                <a href="login.html" class="nav-link active">Login</a>
-                <a href="signup.html" class="nav-link">Create Account</a>
-                <a href="volunteer-login.html" class="nav-link" style="font-size: 0.8em; opacity: 0.8;">Volunteer / Staff</a>
+                <a href="login.html" class="nav-link">Student Login</a>
+                <a href="volunteer-login.html" class="nav-link active">Volunteer Login</a>
             </nav>
         </div>
     </header>
 
     <main class="container">
         <section class="card">
-            <h2>Student Login</h2>
-            <p class="subtitle">Access your VITraPass dashboard</p>
+            <h2>Volunteer Login</h2>
+            <p class="subtitle">Access the VITraPass secure scanner</p>
 
             <form id="login-form" novalidate>
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="Loading..." required>
+                    <input type="email" id="email" name="email" placeholder="volunteer@example.com" required>
                     <span class="error-msg" id="email-error"></span>
                 </div>
 
@@ -44,15 +43,6 @@
             
             <div style="margin-top: 15px; text-align: center;">
                 <a href="#" id="forgot-password-link" style="color: var(--primary-color);">Forgot Password?</a>
-            </div>
-            
-            <div style="margin-top: 15px; text-align: center;">
-                Don't have an account? <a href="signup.html" style="color: var(--primary-color);">Create one here</a>
-            </div>
-
-            <hr style="margin: 25px 0 15px 0; border: 0; border-top: 1px solid #eee;">
-            <div style="text-align: center;">
-                <a href="volunteer-login.html" style="color: #555; font-size: 0.9em; text-decoration: none; font-weight: bold; padding: 8px 16px; border: 1px solid #ddd; border-radius: 4px; display: inline-block; background: #fafafa; transition: all 0.2s ease;">Volunteer / Staff Login</a>
             </div>
 
             <div id="loading" class="loading hidden">
@@ -80,13 +70,14 @@
     <script src="js/auth.js?v=2"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Check if already authenticated
-            if (Auth.isAuthenticated()) {
-                window.location.href = 'dashboard.html';
+            // Check if already authenticated and is volunteer
+            if (Auth.isAuthenticated() && Auth.isVolunteer()) {
+                window.location.href = 'volunteer-scanner.html';
                 return;
+            } else if (Auth.isAuthenticated()) {
+                // If authenticated but not volunteer, sign out to allow fresh login
+                Auth.signOut();
             }
-
-            document.getElementById('email').placeholder = `your.email@${CONFIG.ALLOWED_EMAIL_DOMAIN}`;
 
             const loginForm = document.getElementById('login-form');
             const emailInput = document.getElementById('email');
@@ -105,7 +96,14 @@
 
                 Auth.signIn(email, password, {
                     onSuccess: function (result) {
-                        window.location.href = 'dashboard.html';
+                        if (Auth.isVolunteer()) {
+                            window.location.href = 'volunteer-scanner.html';
+                        } else {
+                            Auth.signOut();
+                            loading.classList.add('hidden');
+                            errorDetail.textContent = "Access Denied: You are not a registered Volunteer.";
+                            errorBox.classList.remove('hidden');
+                        }
                     },
                     onFailure: function (err) {
                         loading.classList.add('hidden');
