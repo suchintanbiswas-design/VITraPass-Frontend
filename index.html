@@ -3,26 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VITraPass - Loading...</title>
+    <title>VITraPass - Select Role</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Amazon Cognito SDK -->
     <script src="https://unpkg.com/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
     <script src="js/config.js?v=2"></script>
     <script src="js/auth.js?v=2"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (Auth.isAuthenticated()) {
-                window.location.replace('dashboard.html');
-            } else {
-                window.location.replace('login.html');
-            }
+            // Optional: Auto-redirect if already logged in and we know their role.
+            // But requirement 18 says: "Make the central portal purely a navigation/entry point; it must not itself grant any role."
+            // So we can leave it as just a portal.
         });
     </script>
 </head>
 <body>
-    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column;">
-        <div class="spinner"></div>
-        <p style="margin-top: 20px; font-family: sans-serif; color: #555;">Loading VITraPass...</p>
-    </div>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">VITra<span class="accent">Pass</span></h1>
+            <p class="tagline">VIT Smart Event Ticketing System</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="color: var(--primary-color); font-size: 1.8rem; margin-bottom: 8px;">Welcome to VITraPass</h2>
+            <p style="color: var(--text-muted);">Please select your role to continue.</p>
+        </div>
+
+        <div class="role-cards-container">
+            <!-- Student Card -->
+            <div class="role-card">
+                <h2>Student</h2>
+                <p>Access your tickets and register for upcoming VIT events.</p>
+                <a href="login.html" class="btn btn-primary">Student Login</a>
+                <a href="signup.html" class="btn btn-secondary">Create Student Account</a>
+            </div>
+
+            <!-- Volunteer/Staff Card -->
+            <div class="role-card">
+                <h2>Volunteer / Staff</h2>
+                <p>Scan tickets, manage entries, and oversee event operations.</p>
+                <a href="volunteer-login.html" class="btn btn-primary">Login</a>
+            </div>
+
+            <!-- Admin Card -->
+            <div class="role-card">
+                <h2>Administrator</h2>
+                <p>View event statistics, check-in metrics, and system status.</p>
+                <a href="admin-login.html" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2027 VITraPass — VIT Smart Event Ticketing System</p>
+            <p class="footer-note">Cloud Architecture Design Project</p>
+        </div>
+    </footer>
 </body>
 </html>
