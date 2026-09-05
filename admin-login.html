@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VITraPass - Login</title>
+    <title>VITraPass - Admin Login</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,22 +12,21 @@
             <h1 class="logo">VITra<span class="accent">Pass</span></h1>
             <p class="tagline">VIT Smart Event Ticketing System</p>
             <nav class="nav">
-                <a href="login.html" class="nav-link active">Login</a>
-                <a href="signup.html" class="nav-link">Create Account</a>
-                <a href="volunteer-login.html" class="nav-link" style="font-size: 0.8em; opacity: 0.8;">Volunteer / Staff</a>
+                <a href="login.html" class="nav-link">Student Login</a>
+                <a href="admin-login.html" class="nav-link active">Admin Login</a>
             </nav>
         </div>
     </header>
 
     <main class="container">
         <section class="card">
-            <h2>Student Login</h2>
-            <p class="subtitle">Access your VITraPass dashboard</p>
+            <h2>Admin Login</h2>
+            <p class="subtitle">Access the VITraPass admin dashboard</p>
 
             <form id="login-form" novalidate>
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="Loading..." required>
+                    <input type="email" id="email" name="email" placeholder="admin@example.com" required>
                     <span class="error-msg" id="email-error"></span>
                 </div>
 
@@ -44,15 +43,6 @@
             
             <div style="margin-top: 15px; text-align: center;">
                 <a href="#" id="forgot-password-link" style="color: var(--primary-color);">Forgot Password?</a>
-            </div>
-            
-            <div style="margin-top: 15px; text-align: center;">
-                Don't have an account? <a href="signup.html" style="color: var(--primary-color);">Create one here</a>
-            </div>
-
-            <hr style="margin: 25px 0 15px 0; border: 0; border-top: 1px solid #eee;">
-            <div style="text-align: center;">
-                <a href="volunteer-login.html" style="color: #555; font-size: 0.9em; text-decoration: none; font-weight: bold; padding: 8px 16px; border: 1px solid #ddd; border-radius: 4px; display: inline-block; background: #fafafa; transition: all 0.2s ease;">Volunteer / Staff Login</a>
             </div>
 
             <div id="loading" class="loading hidden">
@@ -80,23 +70,14 @@
     <script src="js/auth.js?v=2"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Check if already authenticated
-            if (Auth.isAuthenticated()) {
-                if (Auth.isAdmin()) {
-                    window.location.href = 'admin.html';
-                } else if (Auth.isVolunteer()) {
-                    window.location.href = 'volunteer-scanner.html';
-                } else if (Auth.isStudent()) {
-                    window.location.href = 'dashboard.html';
-                } else {
-                    Auth.signOut();
-                    alert('Access Denied: Your account has no assigned role.');
-                    window.location.href = 'login.html';
-                }
+            // Check if already authenticated and is admin
+            if (Auth.isAuthenticated() && Auth.isAdmin()) {
+                window.location.href = 'admin.html';
                 return;
+            } else if (Auth.isAuthenticated()) {
+                // If authenticated but not admin, sign out to allow fresh login
+                Auth.signOut();
             }
-
-            document.getElementById('email').placeholder = `your.email@${CONFIG.ALLOWED_EMAIL_DOMAIN}`;
 
             const loginForm = document.getElementById('login-form');
             const emailInput = document.getElementById('email');
@@ -117,14 +98,10 @@
                     onSuccess: function (result) {
                         if (Auth.isAdmin()) {
                             window.location.href = 'admin.html';
-                        } else if (Auth.isVolunteer()) {
-                            window.location.href = 'volunteer-scanner.html';
-                        } else if (Auth.isStudent()) {
-                            window.location.href = 'dashboard.html';
                         } else {
                             Auth.signOut();
                             loading.classList.add('hidden');
-                            errorDetail.textContent = 'Access Denied: Your account has no assigned role.';
+                            errorDetail.textContent = "Access Denied: You are not a registered Administrator.";
                             errorBox.classList.remove('hidden');
                         }
                     },

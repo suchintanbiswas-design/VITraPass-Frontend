@@ -12,6 +12,24 @@
 
   refreshBtn.addEventListener('click', loadStats);
 
+  document.addEventListener('DOMContentLoaded', () => {
+    // Requires auth.js to be loaded before admin.js
+    if (typeof Auth !== 'undefined' && Auth.requireAdmin) {
+      Auth.requireAdmin();
+    }
+    
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (typeof Auth !== 'undefined') {
+          Auth.signOut();
+        }
+        window.location.href = 'admin-login.html';
+      });
+    }
+  });
+
   async function loadStats() {
     const eventId = eventSelect.value;
 
@@ -24,7 +42,16 @@
     statsError.classList.add('hidden');
 
     try {
-      const response = await fetch(`${CONFIG.API_BASE_URL}/event/${eventId}/stats`);
+      const idToken = typeof Auth !== 'undefined' ? Auth.getIdToken() : null;
+      const headers = {};
+      if (idToken) {
+        headers['Authorization'] = idToken;
+      }
+
+      const response = await fetch(`${CONFIG.API_BASE_URL}/event/${eventId}/stats`, {
+        method: 'GET',
+        headers: headers
+      });
       const data = await response.json();
 
       if (response.ok) {

@@ -12,9 +12,8 @@
             <h1 class="logo">VITra<span class="accent">Pass</span></h1>
             <p class="tagline">Event Administration Dashboard</p>
             <nav class="nav">
-                <a href="index.html" class="nav-link">Register</a>
-                <a href="scanner.html" class="nav-link">Scanner</a>
                 <a href="admin.html" class="nav-link active">Dashboard</a>
+                <a href="#" id="logout-btn" class="nav-link">Logout</a>
             </nav>
         </div>
     </header>
@@ -22,9 +21,6 @@
     <main class="container">
         <section class="card">
             <h2>📊 Event Dashboard</h2>
-            <div style="background-color: #fff3e0; border-left: 4px solid #ff9800; padding: 12px; margin-bottom: 20px; font-size: 14px; border-radius: 4px;">
-                <strong>Notice:</strong> This dashboard is currently publicly accessible and displays aggregate event statistics only. Authentication will be added in a future phase.
-            </div>
 
             <div class="form-group">
                 <label for="dashboard-event">Select Event</label>
@@ -86,7 +82,9 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
     <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/admin.js"></script>
 </body>
 </html>

@@ -167,5 +167,35 @@ const Auth = {
       alert("Access Denied: You must be a registered Volunteer to access this page.");
       window.location.href = 'volunteer-login.html';
     }
+  },
+
+  isAdmin: function() {
+    const token = this.getIdToken();
+    if (!token) return false;
+    const payload = this.parseJwt(token);
+    if (!payload || !payload['cognito:groups']) return false;
+    const groups = payload['cognito:groups'];
+    return Array.isArray(groups) ? groups.includes('ADMIN') : groups === 'ADMIN';
+  },
+
+  isStudent: function() {
+    const token = this.getIdToken();
+    if (!token) return false;
+    const payload = this.parseJwt(token);
+    if (!payload || !payload['cognito:groups']) return false;
+    const groups = payload['cognito:groups'];
+    return Array.isArray(groups) ? groups.includes('STUDENT') : groups === 'STUDENT';
+  },
+
+  requireAdmin: function() {
+    if (!this.isAuthenticated()) {
+      window.location.href = 'admin-login.html';
+      return;
+    }
+    if (!this.isAdmin()) {
+      this.signOut();
+      alert("Access Denied: You must be a registered Administrator to access this page.");
+      window.location.href = 'admin-login.html';
+    }
   }
 };

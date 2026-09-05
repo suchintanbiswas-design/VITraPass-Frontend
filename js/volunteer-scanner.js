@@ -10,8 +10,6 @@
   const stopBtn = document.getElementById('stop-scan');
   const scanAgainBtn = document.getElementById('scan-again');
   const resultDiv = document.getElementById('scan-result');
-  const manualToken = document.getElementById('manual-token');
-  const manualValidateBtn = document.getElementById('manual-validate');
 
   let html5QrCode = null;
 
@@ -49,15 +47,7 @@
     startBtn.click();
   });
 
-  // Manual validation
-  manualValidateBtn.addEventListener('click', function () {
-    const token = manualToken.value.trim();
-    if (!token) {
-      showResult('error', 'Please enter a JWT token.');
-      return;
-    }
-    validateTicket(token);
-  });
+
 
   async function onScanSuccess(decodedText) {
     // Stop scanning after successful read
