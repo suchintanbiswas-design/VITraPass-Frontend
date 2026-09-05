@@ -82,15 +82,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Check if already authenticated
             if (Auth.isAuthenticated()) {
-                if (Auth.isAdmin()) {
-                    window.location.href = 'admin.html';
-                } else if (Auth.isVolunteer()) {
-                    window.location.href = 'volunteer-scanner.html';
-                } else if (Auth.isStudent()) {
+                if (Auth.isStudent()) {
                     window.location.href = 'dashboard.html';
                 } else {
                     Auth.signOut();
-                    alert('Access Denied: Your account has no assigned role.');
+                    alert('Access Denied: You are not registered as a student.');
                     window.location.href = 'login.html';
                 }
                 return;
@@ -115,16 +111,12 @@
 
                 Auth.signIn(email, password, {
                     onSuccess: function (result) {
-                        if (Auth.isAdmin()) {
-                            window.location.href = 'admin.html';
-                        } else if (Auth.isVolunteer()) {
-                            window.location.href = 'volunteer-scanner.html';
-                        } else if (Auth.isStudent()) {
+                        if (Auth.isStudent()) {
                             window.location.href = 'dashboard.html';
                         } else {
                             Auth.signOut();
                             loading.classList.add('hidden');
-                            errorDetail.textContent = 'Access Denied: Your account has no assigned role.';
+                            errorDetail.textContent = 'Access Denied: You are not registered as a student.';
                             errorBox.classList.remove('hidden');
                         }
                     },

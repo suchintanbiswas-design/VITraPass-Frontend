@@ -187,6 +187,18 @@ const Auth = {
     return Array.isArray(groups) ? groups.includes('STUDENT') : groups === 'STUDENT';
   },
 
+  requireStudent: function() {
+    if (!this.isAuthenticated()) {
+      window.location.href = 'login.html';
+      return;
+    }
+    if (!this.isStudent()) {
+      this.signOut();
+      alert("Access Denied: You must be a registered Student to access this page.");
+      window.location.href = 'login.html';
+    }
+  },
+
   requireAdmin: function() {
     if (!this.isAuthenticated()) {
       window.location.href = 'admin-login.html';
